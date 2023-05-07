@@ -20,16 +20,6 @@ namespace Papers.FeatureBasedTerrainGeneration.Scripts.Components
             }
 
             data.SetHeights(0, 0, heightMap);
-            //
-            // var alphaMap = new float[data.alphamapResolution, data.alphamapResolution, data.alphamapLayers];
-            // for (var z = 0; z < data.alphamapResolution; ++z)
-            // {
-            //     for (var x = 0; x < data.alphamapResolution; ++x)
-            //     {
-            //         alphaMap[x, z, 0] = 1.0f;
-            //     }
-            // }
-            // data.SetAlphamaps(0,0,alphaMap);
         }
     }
 }
