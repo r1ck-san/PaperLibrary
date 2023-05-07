@@ -2,8 +2,33 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 namespace Papers.FeatureBasedTerrainGeneration.Scripts.Components
 {
+#if UNITY_EDITOR
+
+    [CustomEditor(typeof(ElevationMapTextureGenerator))]
+    public class ElevationMapTextureGeneratorEditor : Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
+            if (GUILayout.Button("テクスチャを保存"))
+            {
+                var component = target as ElevationMapTextureGenerator;
+                if (component != null)
+                {
+                    component.GenerateAndSave();
+                }
+            }
+        }
+    }
+
+#endif
+    
     [RequireComponent(typeof(Image))]
     public class ElevationMapTextureGenerator : MonoBehaviour
     {
@@ -12,12 +37,7 @@ namespace Papers.FeatureBasedTerrainGeneration.Scripts.Components
         
         private void Start()
         {
-            texture = new Texture2D(parameter.gridSize, parameter.gridSize, TextureFormat.RGBA32, false);
-            
-            var elevationMap = new float[parameter.gridSize, parameter.gridSize];
-            SetHeights(ref elevationMap);
-            ApplyColor(ref elevationMap);
-            texture.Apply();
+            Generate();
             
             var image = GetComponent<Image>();
             var sprite = Sprite.Create(texture, new Rect(0, 0, parameter.gridSize, parameter.gridSize), Vector2.zero);
@@ -27,6 +47,25 @@ namespace Papers.FeatureBasedTerrainGeneration.Scripts.Components
         private void OnDestroy()
         {
             DestroyImmediate(texture);
+        }
+
+        public void GenerateAndSave()
+        {
+            Generate();
+            System.IO.File.WriteAllBytes($"{Application.dataPath}/Papers/FeatureBasedTerrainGeneration/Textures/elevation.png",texture.EncodeToPNG());
+            DestroyImmediate(texture);
+            
+            AssetDatabase.Refresh();
+        }
+
+        private void Generate()
+        {
+            texture = new Texture2D(parameter.gridSize, parameter.gridSize, TextureFormat.RGBA32, false);
+            
+            var elevationMap = new float[parameter.gridSize, parameter.gridSize];
+            SetHeights(ref elevationMap);
+            ApplyColor(ref elevationMap);
+            texture.Apply();
         }
 
         private void SetHeights(ref float[,] elevationMap)
