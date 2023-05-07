@@ -41,12 +41,65 @@ namespace Papers.FeatureBasedTerrainGeneration.Scripts.Components
 
             foreach (var param in parameter.controlParams)
             {
-                var points = BezierCurveService.GeneratePoints(param.bezierPoints, parameter.bezierDivision);
+                var points = BezierCurveService.GenerateBezierPoints(param.bezierPoints, parameter.division);
                 for (var i = 0; i < points.Count; i++)
                 {
-                    var x = Mathf.RoundToInt(points[i].x * (parameter.gridSize - 1));
-                    var y = Mathf.RoundToInt(points[i].y * (parameter.gridSize - 1));
-                    elevationMap[x, y] = 1f;
+                    var position = points[i].Position;
+                    var normal = points[i].Normal;
+                    var h = parameter.initHeight + param.elevationConstraints.x;
+
+                    var x = Mathf.RoundToInt(position.x * (parameter.gridSize - 1));
+                    var y = Mathf.RoundToInt(position.y * (parameter.gridSize - 1));
+                    elevationMap[x, y] = h;
+                    
+                    // calc r
+                    var r = param.elevationConstraints.y;
+                    for (var j = 0.0f; j < r; j += parameter.division)
+                    {
+                        var dn1 = normal * j;
+                        var dx1 = Mathf.RoundToInt((position.x + dn1.x) * (parameter.gridSize - 1));
+                        var dy1 = Mathf.RoundToInt((position.y + dn1.y) * (parameter.gridSize - 1));
+                        if (0 <= dx1 && dx1 < parameter.gridSize && 0 <= dy1 && dy1 < parameter.gridSize)
+                        {
+                            elevationMap[dx1, dy1] = h;
+                        }
+                        
+                        var dn2 = normal * -j;
+                        var dx2 = Mathf.RoundToInt((position.x + dn2.x) * (parameter.gridSize - 1));
+                        var dy2 = Mathf.RoundToInt((position.y + dn2.y) * (parameter.gridSize - 1));
+                        if (0 <= dx2 && dx2 < parameter.gridSize && 0 <= dy2 && dy2 < parameter.gridSize)
+                        {
+                            elevationMap[dx2, dy2] = h;
+                        }
+                    }
+                    
+                    // calc a
+                    var a = param.angleConstraints.x;
+                    var theta = param.angleConstraints.z * Mathf.Deg2Rad;
+                    for (var j = 0.0f; j < a; j += parameter.division)
+                    {
+                        var dn = -normal * (r + j * Mathf.Sin(theta));
+                        var dx = Mathf.RoundToInt((position.x + dn.x) * (parameter.gridSize - 1));
+                        var dy = Mathf.RoundToInt((position.y + dn.y) * (parameter.gridSize - 1));
+                        if (0 <= dx && dx < parameter.gridSize && 0 <= dy && dy < parameter.gridSize)
+                        {
+                            elevationMap[dx, dy] = h - j * Mathf.Cos(theta);
+                        }
+                    }
+
+                    // calc b
+                    var b = param.angleConstraints.y;
+                    var phi = param.angleConstraints.w * Mathf.Deg2Rad;
+                    for (var j = 0.0f; j < b; j += parameter.division)
+                    {
+                        var dn = normal * (r + j * Mathf.Sin(phi));
+                        var dx = Mathf.RoundToInt((position.x + dn.x) * (parameter.gridSize - 1));
+                        var dy = Mathf.RoundToInt((position.y + dn.y) * (parameter.gridSize - 1));
+                        if (0 <= dx && dx < parameter.gridSize && 0 <= dy && dy < parameter.gridSize)
+                        {
+                            elevationMap[dx, dy] = h - j * Mathf.Cos(phi);
+                        }
+                    }
                 }
             }
 

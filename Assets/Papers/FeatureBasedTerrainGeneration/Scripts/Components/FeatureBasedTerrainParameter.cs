@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Papers.FeatureBasedTerrainGeneration.Scripts.Components
 {
@@ -17,7 +18,7 @@ namespace Papers.FeatureBasedTerrainGeneration.Scripts.Components
     {
         public int gridSize = 512;
         public float initHeight = 0.3f;
-        public float bezierDivision = 0.0001f;
+        public float division = 0.0001f;
         public float diffusionConstant = 0.05f;
         public int diffusionCount = 100;
         public List<RidgeControlParam> controlParams= new List<RidgeControlParam>();
