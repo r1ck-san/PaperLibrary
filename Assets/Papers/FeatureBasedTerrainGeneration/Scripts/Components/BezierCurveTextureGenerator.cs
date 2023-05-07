@@ -9,7 +9,6 @@ namespace Papers.FeatureBasedTerrainGeneration.Scripts.Components
     {
         [SerializeField] private FeatureBasedTerrainParameter parameter;
         [SerializeField] private Texture2D texture;
-        [SerializeField] private float step = 0.01f;
         [SerializeField] private Color defaultColor = Color.white;
         [SerializeField] private Color lineColor = Color.blue;
         
@@ -48,7 +47,7 @@ namespace Papers.FeatureBasedTerrainGeneration.Scripts.Components
         {
             foreach (var param in parameter.controlParams)
             {
-                var points = BezierCurveService.GeneratePoints(param.bezierPoints, step);
+                var points = BezierCurveService.GeneratePoints(param.bezierPoints, parameter.bezierDivision);
                 foreach (var point in points)
                 {
                     var p = point * (parameter.gridSize - 1);

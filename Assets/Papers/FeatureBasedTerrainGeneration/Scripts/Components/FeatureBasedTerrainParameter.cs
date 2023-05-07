@@ -17,7 +17,8 @@ namespace Papers.FeatureBasedTerrainGeneration.Scripts.Components
     {
         public int gridSize = 512;
         public float initHeight = 0.3f;
-        public float diffusionConstant = 0.05f; // 拡散係数
+        public float bezierDivision = 0.0001f;
+        public float diffusionConstant = 0.05f;
         public int diffusionCount = 100;
         public List<RidgeControlParam> controlParams= new List<RidgeControlParam>();
     }

@@ -41,9 +41,7 @@ namespace Papers.FeatureBasedTerrainGeneration.Scripts.Components
 
             foreach (var param in parameter.controlParams)
             {
-                var point = parameter.controlParams[0];
-                var points = BezierCurveService.GeneratePoints(param.bezierPoints, 0.01f);
-                
+                var points = BezierCurveService.GeneratePoints(param.bezierPoints, parameter.bezierDivision);
                 for (var i = 0; i < points.Count; i++)
                 {
                     var x = Mathf.RoundToInt(points[i].x * (parameter.gridSize - 1));
