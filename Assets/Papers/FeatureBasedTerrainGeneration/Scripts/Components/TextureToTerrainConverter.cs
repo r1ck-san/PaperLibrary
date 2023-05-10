@@ -1,13 +1,42 @@
 ﻿using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 
 namespace Papers.FeatureBasedTerrainGeneration.Scripts.Components
 {
+#if UNITY_EDITOR
+
+    [CustomEditor(typeof(TextureToTerrainConverter))]
+    public class TextureToTerrainConverterEditor : Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
+            if (GUILayout.Button("Terrain変換"))
+            {
+                var component = target as TextureToTerrainConverter;
+                if (component != null)
+                {
+                    component.Generate();
+                }
+            }
+        }
+    }
+
+#endif
     public class TextureToTerrainConverter : MonoBehaviour
     {
         [SerializeField] private Terrain terrain;
         [SerializeField] private Texture2D texture;
 
         private void Start()
+        {
+            Generate();
+        }
+
+        public void Generate()
         {
             var data = terrain.terrainData;
             var heightMap = new float[texture.width, texture.height];

@@ -1,7 +1,6 @@
 ﻿using Papers.FeatureBasedTerrainGeneration.Scripts.Services;
 using UnityEngine;
 using UnityEngine.UI;
-
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -33,39 +32,40 @@ namespace Papers.FeatureBasedTerrainGeneration.Scripts.Components
     public class ElevationMapTextureGenerator : MonoBehaviour
     {
         [SerializeField] private FeatureBasedTerrainParameter parameter;
-        [SerializeField] private Texture2D texture;
+        private Texture2D _texture;
         
         private void Start()
         {
             Generate();
             
             var image = GetComponent<Image>();
-            var sprite = Sprite.Create(texture, new Rect(0, 0, parameter.gridSize, parameter.gridSize), Vector2.zero);
+            var sprite = Sprite.Create(_texture, new Rect(0, 0, parameter.gridSize, parameter.gridSize), Vector2.zero);
             image.sprite = sprite;
         }
 
         private void OnDestroy()
         {
-            DestroyImmediate(texture);
+            DestroyImmediate(_texture);
+            _texture = null;
         }
 
         public void GenerateAndSave()
         {
             Generate();
-            System.IO.File.WriteAllBytes($"{Application.dataPath}/Papers/FeatureBasedTerrainGeneration/Textures/elevation.png",texture.EncodeToPNG());
-            DestroyImmediate(texture);
+            System.IO.File.WriteAllBytes($"{Application.dataPath}/Papers/FeatureBasedTerrainGeneration/Textures/elevation.png",_texture.EncodeToPNG());
+            DestroyImmediate(_texture);
             
             AssetDatabase.Refresh();
         }
 
         private void Generate()
         {
-            texture = new Texture2D(parameter.gridSize, parameter.gridSize, TextureFormat.RGBA32, false);
+            _texture = new Texture2D(parameter.gridSize, parameter.gridSize, TextureFormat.RGBA32, false);
             
             var elevationMap = new float[parameter.gridSize, parameter.gridSize];
             SetHeights(ref elevationMap);
             ApplyColor(ref elevationMap);
-            texture.Apply();
+            _texture.Apply();
         }
 
         private void SetHeights(ref float[,] elevationMap)
@@ -152,7 +152,7 @@ namespace Papers.FeatureBasedTerrainGeneration.Scripts.Components
                 for (var y = 0; y < parameter.gridSize; ++y)
                 {
                     var height = elevationMap[x, y];
-                    texture.SetPixel(x, y, new Color(height, height, height, 1.0f));
+                    _texture.SetPixel(x, y, new Color(height, height, height, 1.0f));
                 }
             }
         }
