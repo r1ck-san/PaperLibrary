@@ -1,4 +1,5 @@
-﻿using Papers.FeatureBasedTerrainGeneration.Scripts.Services;
+﻿using System.Collections.Generic;
+using Papers.FeatureBasedTerrainGeneration.Scripts.Services;
 using UnityEngine;
 using UnityEngine.UI;
 #if UNITY_EDITOR
@@ -66,46 +67,26 @@ namespace Papers.FeatureBasedTerrainGeneration.Scripts.Components
         {
             _texture = new Texture2D(parameter.gridSize, parameter.gridSize, TextureFormat.RGBA32, false);
 
-            var pixels = new Color[parameter.gridSize, parameter.gridSize];
-            InitColor(ref pixels);
-            SetBezierCurve(ref pixels);
-            ApplyColor(ref pixels);
-            _texture.Apply();
-        }
-
-        private void InitColor(ref Color[,] pixels)
-        {
-            for (var x = 0; x < parameter.gridSize; ++x)
+            var pixels = new List<Color>(parameter.gridSize * parameter.gridSize);
+            // init
+            for (var i = 0; i < parameter.gridSize * parameter.gridSize; ++i)
             {
-                for (var y = 0; y < parameter.gridSize; ++y)
-                {
-                    pixels[x, y] = defaultColor;
-                }
+                pixels.Add(defaultColor);
             }
-        }
-
-        private void SetBezierCurve(ref Color[,] pixels)
-        {
+            
+            // calc bezier points
             foreach (var param in parameter.controlParams)
             {
-                var points = BezierCurveService.GeneratePoints(param.bezierPoints, parameter.division);
-                foreach (var point in points)
+                foreach (var point in BezierCurveService.GeneratePoints(param.bezierPoints, parameter.division))
                 {
                     var p = point * (parameter.gridSize - 1);
-                    pixels[(int)p.x, (int)p.y] = lineColor;
+                    pixels[(int)p.y * parameter.gridSize + (int)p.x] = lineColor;
                 }
             }
-        }
-
-        private void ApplyColor(ref Color[,] pixels)
-        {
-            for (var x = 0; x < parameter.gridSize; ++x)
-            {
-                for (var y = 0; y < parameter.gridSize; ++y)
-                {
-                    _texture.SetPixel(x, y, pixels[x, y]);
-                }
-            }
+            
+            // set
+            _texture.SetPixels(pixels.ToArray());
+            _texture.Apply();
         }
     }
 }
