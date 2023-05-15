@@ -9,15 +9,15 @@ namespace Papers.FeatureBasedTerrainGeneration.Scripts.Components
 {
 #if UNITY_EDITOR
 
-    [CustomEditor(typeof(ElevationMapTextureGenerator))]
-    public class ElevationMapTextureGeneratorEditor : Editor
+    [CustomEditor(typeof(ElevationMapGenerator))]
+    public class ElevationMapGeneratorEditor : Editor
     {
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
             if (GUILayout.Button("テクスチャを保存"))
             {
-                var component = target as ElevationMapTextureGenerator;
+                var component = target as ElevationMapGenerator;
                 if (component != null)
                 {
                     component.GenerateAndSave();
@@ -29,7 +29,7 @@ namespace Papers.FeatureBasedTerrainGeneration.Scripts.Components
 #endif
     
     [RequireComponent(typeof(Image))]
-    public class ElevationMapTextureGenerator : MonoBehaviour
+    public class ElevationMapGenerator : MonoBehaviour
     {
         [SerializeField] private FeatureBasedTerrainParameter parameter;
         private Texture2D _texture;
