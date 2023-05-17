@@ -786,26 +786,18 @@ MonoBehaviour:
   initHeight: 0.3
   division: 0.0001
   diffusionConstant: 0.05
-  diffusionCount: 100
+  diffusionCount: 50
   controlParams:
   - bezierPoints:
-    - {x: 0, y: 0}
-    - {x: 0.1, y: 0.9}
-    - {x: 0.9, y: 0.1}
-    - {x: 1, y: 1}
-    elevationConstraints: {x: -0.1, y: 0.001}
-    angleConstraints: {x: 0.025, y: 0.025, z: 110, w: 135}
-    noiseConstraints: {x: 0, y: 0}
-  - bezierPoints:
-    - {x: 0, y: 1}
-    - {x: 0.9, y: 0.9}
-    - {x: 0.1, y: 0.1}
-    - {x: 1, y: 0}
+    - {x: 0.9340187, y: 0.6876203}
+    - {x: 0.54681545, y: 0.08110995}
+    - {x: 0.18712458, y: 0.45332718}
+    - {x: 0.29717186, y: 0.9885438}
     elevationConstraints: {x: 0.5, y: 0.001}
-    angleConstraints: {x: 0.5, y: 0.5, z: 30, w: 45}
+    angleConstraints: {x: 0.40518543, y: 0.11215772, z: 30, w: 30}
     noiseConstraints: {x: 0, y: 0}
   seed: 0
-  controlParamCount: 10
+  controlParamCount: 3
 --- !u!224 &1518758094
 RectTransform:
   m_ObjectHideFlags: 0
@@ -858,7 +850,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   terrain: {fileID: 1983083383}
-  texture: {fileID: 2800000, guid: 1af309cba949e494586c33c3da12c98c, type: 3}
+  texture: {fileID: 2800000, guid: 87c56b26c117f6145ac77fe34bb09d2d, type: 3}
 --- !u!154 &1983083382
 TerrainCollider:
   m_ObjectHideFlags: 0

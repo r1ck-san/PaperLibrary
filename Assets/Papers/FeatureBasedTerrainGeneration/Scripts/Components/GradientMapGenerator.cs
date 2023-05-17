@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Papers.FeatureBasedTerrainGeneration.Scripts.Services;
+﻿using Papers.FeatureBasedTerrainGeneration.Scripts.Services;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -145,6 +144,7 @@ namespace Papers.FeatureBasedTerrainGeneration.Scripts.Components
             }
             
             // generate gradient map
+            var gradientMap = new Color[parameter.gridSize, parameter.gridSize];
             for (var i = 0; i < parameter.gridSize; ++i)
             {
                 for (var j = 0; j < parameter.gridSize; ++j)
@@ -161,7 +161,17 @@ namespace Papers.FeatureBasedTerrainGeneration.Scripts.Components
                     {
                         color.g = elevationMap[i, j + 1] - elevationMap[i, j - 1] + 0.5f;
                     }
-                    _texture.SetPixel(i, j,  color);
+
+                    gradientMap[i, j] = color;
+                }
+            }
+            DiffuseService.Diffuse(parameter.gridSize, parameter.diffusionCount, parameter.diffusionConstant, ref gradientMap);
+            
+            for (var i = 0; i < parameter.gridSize; ++i)
+            {
+                for (var j = 0; j < parameter.gridSize; ++j)
+                {
+                    _texture.SetPixel(i, j, gradientMap[i, j]);
                 }
             }
         }
